@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/taxclear-uk/',
+  base: '/', // only for github page /taxclear-uk/',
 })
