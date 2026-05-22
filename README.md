@@ -5,7 +5,7 @@
 [![Deploy to GitHub Pages](https://github.com/gaurangjani/taxclear-uk/actions/workflows/deploy.yml/badge.svg)](https://github.com/gaurangjani/taxclear-uk/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Live:** https://gaurangjani.github.io/taxclear-uk/
+**Live:** https://taxclear-uk.netlify.app
 
 ---
 
