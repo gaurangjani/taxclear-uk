@@ -1,61 +1,179 @@
 import { useState, useMemo, useCallback } from "react";
 
-// ─── TAX CONSTANTS 2024/25 ────────────────────────────────────────────────────
-const TAX = {
-  PERSONAL_ALLOWANCE: 12570,
-  BASIC_RATE_LIMIT: 50270,
-  HIGHER_RATE_LIMIT: 125140,
-  BASIC_RATE: 0.20,
-  HIGHER_RATE: 0.40,
-  ADDITIONAL_RATE: 0.45,
-  // NI Employee
-  NI_PRIMARY_THRESHOLD: 12570,
-  NI_UPPER_EARNINGS: 50270,
-  NI_MAIN_RATE: 0.08,
-  NI_UPPER_RATE: 0.02,
-  // NI Self-Employed
-  CLASS2_WEEKLY: 3.45,
-  CLASS4_MAIN: 0.06,
-  CLASS4_UPPER: 0.02,
-  CLASS4_LOWER_PROFIT: 12570,
-  CLASS4_UPPER_PROFIT: 50270,
-  // Pension
-  PENSION_ANNUAL_ALLOWANCE: 60000,
-  // CGT
-  CGT_ALLOWANCE: 3000,
-  CGT_BASIC_RATE_RESIDENTIAL: 0.18,
-  CGT_HIGHER_RATE_RESIDENTIAL: 0.28,
-  CGT_BASIC_RATE_OTHER: 0.10,
-  CGT_HIGHER_RATE_OTHER: 0.20,
-  // Dividends
-  DIVIDEND_ALLOWANCE: 500,
-  DIVIDEND_BASIC: 0.0875,
-  DIVIDEND_HIGHER: 0.3375,
-  DIVIDEND_ADDITIONAL: 0.3938,
-  // VAT
-  VAT_STANDARD: 0.20,
-  VAT_REDUCED: 0.05,
-  // ISA
-  ISA_ALLOWANCE: 20000,
-  // Corporation Tax
-  CORP_SMALL: 0.19,
-  CORP_MAIN: 0.25,
-  CORP_SMALL_LIMIT: 50000,
-  CORP_MAIN_LIMIT: 250000,
-  // Student Loan
-  SL_PLAN1_THRESHOLD: 22015,
-  SL_PLAN2_THRESHOLD: 27295,
-  SL_PLAN4_THRESHOLD: 27660,
-  SL_PLAN5_THRESHOLD: 25000,
-  SL_RATE: 0.09,
-  // Child Benefit
-  CHILD_BENEFIT_RATE1: 25.60,
-  CHILD_BENEFIT_ADDITIONAL: 16.95,
-  HICBC_THRESHOLD: 60000,
-  HICBC_UPPER: 80000,
-  // Marriage Allowance
-  MARRIAGE_ALLOWANCE: 1260,
+// ─── TAX YEARS ─────────────────────────────────────────────────────────────────
+const TAX_YEARS = {
+  "2024/25": {
+    label: "2024/25",
+    startDate: "6 Apr 2024",
+    endDate: "5 Apr 2025",
+    personalAllowance: 12570,
+    basicRateLimit: 50270,
+    higherRateLimit: 125140,
+    basicRate: 0.20,
+    higherRate: 0.40,
+    additionalRate: 0.45,
+    niPrimaryThreshold: 12570,
+    niUpperEarnings: 50270,
+    niMainRate: 0.08,
+    niUpperRate: 0.02,
+    niSecondaryThreshold: 9100,
+    niEmployerRate: 0.138,
+    class2Weekly: 3.45,
+    class4Main: 0.06,
+    class4Upper: 0.02,
+    class4LowerProfit: 12570,
+    class4UpperProfit: 50270,
+    pensionAnnualAllowance: 60000,
+    cgtAllowance: 3000,
+    cgtBasicRateResidential: 0.18,
+    cgtHigherRateResidential: 0.28,
+    cgtBasicRateOther: 0.10,
+    cgtHigherRateOther: 0.20,
+    dividendAllowance: 500,
+    dividendBasic: 0.0875,
+    dividendHigher: 0.3375,
+    dividendAdditional: 0.3938,
+    vatStandard: 0.20,
+    vatReduced: 0.05,
+    isaAllowance: 20000,
+    corpSmall: 0.19,
+    corpMain: 0.25,
+    corpSmallLimit: 50000,
+    corpMainLimit: 250000,
+    slPlan1Threshold: 22015,
+    slPlan2Threshold: 27295,
+    slPlan4Threshold: 27660,
+    slPlan5Threshold: 25000,
+    slRate: 0.09,
+    childBenefitRate1: 25.60,
+    childBenefitAdditional: 16.95,
+    hicbThreshold: 60000,
+    hicbUpper: 80000,
+    marriageAllowance: 1260,
+    vatRegistrationThreshold: 90000,
+  },
+  "2025/26": {
+    label: "2025/26",
+    startDate: "6 Apr 2025",
+    endDate: "5 Apr 2026",
+    personalAllowance: 12570,
+    basicRateLimit: 50270,
+    higherRateLimit: 125140,
+    basicRate: 0.20,
+    higherRate: 0.40,
+    additionalRate: 0.45,
+    niPrimaryThreshold: 12570,
+    niUpperEarnings: 50270,
+    niMainRate: 0.08,
+    niUpperRate: 0.02,
+    niSecondaryThreshold: 5000,
+    niEmployerRate: 0.15,
+    class2Weekly: 3.45,
+    class4Main: 0.06,
+    class4Upper: 0.02,
+    class4LowerProfit: 12570,
+    class4UpperProfit: 50270,
+    pensionAnnualAllowance: 60000,
+    cgtAllowance: 3000,
+    cgtBasicRateResidential: 0.18,
+    cgtHigherRateResidential: 0.28,
+    cgtBasicRateOther: 0.10,
+    cgtHigherRateOther: 0.20,
+    dividendAllowance: 500,
+    dividendBasic: 0.0875,
+    dividendHigher: 0.3375,
+    dividendAdditional: 0.3938,
+    vatStandard: 0.20,
+    vatReduced: 0.05,
+    isaAllowance: 20000,
+    corpSmall: 0.19,
+    corpMain: 0.25,
+    corpSmallLimit: 50000,
+    corpMainLimit: 250000,
+    slPlan1Threshold: 22015,
+    slPlan2Threshold: 27295,
+    slPlan4Threshold: 27660,
+    slPlan5Threshold: 25000,
+    slRate: 0.09,
+    childBenefitRate1: 25.60,
+    childBenefitAdditional: 16.95,
+    hicbThreshold: 60000,
+    hicbUpper: 80000,
+    marriageAllowance: 1260,
+    vatRegistrationThreshold: 90000,
+  },
+  "2026/27": {
+    label: "2026/27",
+    startDate: "6 Apr 2026",
+    endDate: "5 Apr 2027",
+    personalAllowance: 12570,
+    basicRateLimit: 50270,
+    higherRateLimit: 125140,
+    basicRate: 0.20,
+    higherRate: 0.40,
+    additionalRate: 0.45,
+    niPrimaryThreshold: 12570,
+    niUpperEarnings: 50270,
+    niMainRate: 0.08,
+    niUpperRate: 0.02,
+    niSecondaryThreshold: 5000,
+    niEmployerRate: 0.15,
+    class2Weekly: 3.45,
+    class4Main: 0.06,
+    class4Upper: 0.02,
+    class4LowerProfit: 12570,
+    class4UpperProfit: 50270,
+    pensionAnnualAllowance: 60000,
+    cgtAllowance: 3000,
+    cgtBasicRateResidential: 0.18,
+    cgtHigherRateResidential: 0.28,
+    cgtBasicRateOther: 0.10,
+    cgtHigherRateOther: 0.20,
+    dividendAllowance: 500,
+    dividendBasic: 0.0875,
+    dividendHigher: 0.3375,
+    dividendAdditional: 0.3938,
+    vatStandard: 0.20,
+    vatReduced: 0.05,
+    isaAllowance: 20000,
+    corpSmall: 0.19,
+    corpMain: 0.25,
+    corpSmallLimit: 50000,
+    corpMainLimit: 250000,
+    slPlan1Threshold: 22015,
+    slPlan2Threshold: 27295,
+    slPlan4Threshold: 27660,
+    slPlan5Threshold: 25000,
+    slRate: 0.09,
+    childBenefitRate1: 25.60,
+    childBenefitAdditional: 16.95,
+    hicbThreshold: 60000,
+    hicbUpper: 80000,
+    marriageAllowance: 1260,
+    vatRegistrationThreshold: 90000,
+  },
 };
+
+const now = new Date();
+const month = now.getMonth() + 1; // 1-12
+const year = now.getFullYear();
+// UK tax year runs from 6 April to 5 April
+// Determine default tax year based on current date
+let currentTaxYear;
+if (month > 4 || (month === 4 && now.getDate() >= 6)) {
+  // On/after 6 April: tax year is year/(year+1)
+  if (year >= 2026) currentTaxYear = "2026/27";
+  else if (year >= 2025) currentTaxYear = "2025/26";
+  else if (year >= 2024) currentTaxYear = "2024/25";
+  else currentTaxYear = "2024/25";
+} else {
+  // Before 6 April: tax year is (year-1)/year
+  if (year - 1 >= 2026) currentTaxYear = "2026/27";
+  else if (year - 1 >= 2025) currentTaxYear = "2025/26";
+  else if (year - 1 >= 2024) currentTaxYear = "2024/25";
+  else currentTaxYear = "2024/25";
+}
+const TAX = TAX_YEARS[currentTaxYear];
 
 const fmt = (n) => `£${Math.round(n).toLocaleString("en-GB")}`;
 const fmtP = (n) => `${(n * 100).toFixed(1)}%`;
@@ -1079,7 +1197,7 @@ function NITab() {
 
   const emp = useMemo(() => calcNIEmployee(income), [income]);
   const self = useMemo(() => calcNISelfEmployed(income), [income]);
-  const employerNI = Math.max(0, Math.min(income, TAX.NI_UPPER_EARNINGS) - 9100) * 0.138 + Math.max(0, income - TAX.NI_UPPER_EARNINGS) * 0.138;
+  const employerNI = Math.max(0, Math.min(income, TAX.NI_UPPER_EARNINGS) - TAX.NI_SECONDARY_THRESHOLD) * TAX.NI_EMPLOYER_RATE + Math.max(0, income - TAX.NI_UPPER_EARNINGS) * TAX.NI_EMPLOYER_RATE;
 
   return (
     <div>
@@ -1103,14 +1221,14 @@ function NITab() {
           </div>
 
           <div className="card">
-            <div className="card-title"><span className="card-title-icon">📋</span> 2024/25 NI Rates</div>
+            <div className="card-title"><span className="card-title-icon">📋</span> {currentTaxYear} NI Rates</div>
             {[
-              ["Employee Class 1 (Main)", "8%", "£12,570 – £50,270"],
-              ["Employee Class 1 (Upper)", "2%", "Above £50,270"],
-              ["Employer Class 1", "13.8%", "Above £9,100"],
-              ["Self-Emp Class 2", "£3.45/wk", "Profits > £12,570"],
-              ["Self-Emp Class 4 (Main)", "6%", "£12,570 – £50,270"],
-              ["Self-Emp Class 4 (Upper)", "2%", "Above £50,270"],
+              ["Employee Class 1 (Main)", `${TAX.NI_MAIN_RATE * 100}%`, `£${TAX.NI_PRIMARY_THRESHOLD.toLocaleString("en-GB")} – £${TAX.NI_UPPER_EARNINGS.toLocaleString("en-GB")}`],
+              ["Employee Class 1 (Upper)", `${TAX.NI_UPPER_RATE * 100}%`, `Above £${TAX.NI_UPPER_EARNINGS.toLocaleString("en-GB")}`],
+              ["Employer Class 1", `${(TAX.NI_EMPLOYER_RATE * 100).toFixed(1)}%`, `Above £${TAX.NI_SECONDARY_THRESHOLD.toLocaleString("en-GB")}`],
+              ["Self-Emp Class 2", `${TAX.CLASS2_WEEKLY}£/wk`, `Profits > £${TAX.NI_PRIMARY_THRESHOLD.toLocaleString("en-GB")}`],
+              ["Self-Emp Class 4 (Main)", `${TAX.CLASS4_MAIN * 100}%`, `£${TAX.NI_PRIMARY_THRESHOLD.toLocaleString("en-GB")} – £${TAX.NI_UPPER_EARNINGS.toLocaleString("en-GB")}`],
+              ["Self-Emp Class 4 (Upper)", `${TAX.CLASS4_UPPER * 100}%`, `Above £${TAX.NI_UPPER_EARNINGS.toLocaleString("en-GB")}`],
             ].map(([name, rate, band]) => (
               <div key={name} className="result-row">
                 <div className="result-row-label" style={{ flexDirection: "column", alignItems: "flex-start", gap: 1 }}>
@@ -1180,11 +1298,11 @@ function NITab() {
             <div className="result-panel">
               <div className="result-panel-header">🏢 Employer NI Cost</div>
               <div className="result-row">
-                <div className="result-row-label"><div className="dot green" />Below Secondary Threshold (£9,100)</div>
+                <div className="result-row-label"><div className="dot green" />Below Secondary Threshold (£${TAX.NI_SECONDARY_THRESHOLD.toLocaleString("en-GB")})</div>
                 <div className="result-row-value">£0</div>
               </div>
               <div className="result-row">
-                <div className="result-row-label"><div className="dot red" />13.8% on {fmt(Math.max(0, income - 9100))}</div>
+                <div className="result-row-label"><div className="dot red" />${(TAX.NI_EMPLOYER_RATE * 100).toFixed(1)}% on {fmt(Math.max(0, income - TAX.NI_SECONDARY_THRESHOLD))}</div>
                 <div className="result-row-value red">{fmt(employerNI)}</div>
               </div>
               <div className="result-row total">
@@ -1329,7 +1447,7 @@ function VATTab() {
           </div>
 
           <div className="info-box gold">
-            💡 <strong>VAT Registration Threshold:</strong> You must register for VAT when your taxable turnover exceeds £90,000 in any 12-month rolling period (2024/25). Voluntary registration is possible below this threshold.
+            💡 <strong>VAT Registration Threshold:</strong> You must register for VAT when your taxable turnover exceeds £90,000 in any 12-month rolling period (${currentTaxYear}). Voluntary registration is possible below this threshold.
           </div>
 
           <div className="info-box" style={{ marginTop: 12 }}>
@@ -1425,7 +1543,7 @@ function PensionTab() {
           </div>
 
           <div className="info-box" style={{ marginTop: 12 }}>
-            🏛️ <strong>Annual Allowance:</strong> £60,000 (2024/25). Unused allowance can be carried forward 3 years. Tapering applies for high earners (above £260,000 adjusted income).
+            🏛️ <strong>Annual Allowance:</strong> £60,000 (${currentTaxYear}). Unused allowance can be carried forward 3 years. Tapering applies for high earners (above £260,000 adjusted income).
           </div>
         </div>
 
@@ -1480,7 +1598,7 @@ function PensionTab() {
           </div>
 
           <div className="card">
-            <div className="card-title"><span className="card-title-icon">📋</span> State Pension (2024/25)</div>
+            <div className="card-title"><span className="card-title-icon">📋</span> State Pension (${currentTaxYear})</div>
             <div className="result-row">
               <div className="result-row-label">Full New State Pension</div>
               <div className="result-row-value gold">£11,502/yr</div>
@@ -1548,7 +1666,7 @@ function CGTTab() {
           </div>
 
           <div className="card">
-            <div className="card-title"><span className="card-title-icon">📋</span> CGT Rates 2024/25</div>
+            <div className="card-title"><span className="card-title-icon">📋</span> CGT Rates ${currentTaxYear}</div>
             {[
               ["Basic Rate — Other Assets", "10%", "var(--blue)"],
               ["Higher/Additional — Other", "20%", "var(--orange)"],
@@ -1670,7 +1788,7 @@ function DividendsTab() {
           </div>
 
           <div className="card">
-            <div className="card-title"><span className="card-title-icon">📋</span> Dividend Tax Rates 2024/25</div>
+            <div className="card-title"><span className="card-title-icon">📋</span> Dividend Tax Rates ${currentTaxYear}</div>
             {[
               ["Basic Rate Band", "8.75%", "var(--blue)"],
               ["Higher Rate Band", "33.75%", "var(--orange)"],
@@ -1744,7 +1862,7 @@ function CorpTaxTab() {
   const ct = useMemo(() => calcCorpTax(profit), [profit]);
   const afterTaxProfit = profit - ct.tax;
   const availableDividend = afterTaxProfit;
-  const employerNI = Math.max(0, (salary - 9100) * 0.138) * directors;
+  const employerNI = Math.max(0, (salary - TAX.NI_SECONDARY_THRESHOLD) * TAX.NI_EMPLOYER_RATE) * directors;
   const effectiveCorp = profit > 0 ? ct.tax / profit : 0;
 
   return (
@@ -1772,7 +1890,7 @@ function CorpTaxTab() {
           </div>
 
           <div className="card">
-            <div className="card-title"><span className="card-title-icon">📋</span> CT Rates 2024/25</div>
+            <div className="card-title"><span className="card-title-icon">📋</span> CT Rates ${currentTaxYear}</div>
             {[
               ["Small Profits Rate (≤£50k)", "19%", "var(--green)"],
               ["Main Rate (≥£250k)", "25%", "var(--red)"],
@@ -1952,7 +2070,7 @@ function BenefitsTab() {
             <div className="card-title"><span className="card-title-icon">🎁</span> Other Key Benefits & Reliefs</div>
             {[
               ["Marriage Allowance", "Transfer £1,260 of unused personal allowance to basic-rate taxpaying spouse — saves up to £252/yr"],
-              ["Blind Person's Allowance", "Additional £3,070 allowance if registered blind (2024/25)"],
+              ["Blind Person's Allowance", `Additional £3,070 allowance if registered blind (${currentTaxYear})`],
               ["Trading Allowance", "First £1,000 of self-employment/trading income is tax-free"],
               ["Property Allowance", "First £1,000 of property income is tax-free"],
               ["Rent a Room Relief", "Up to £7,500/yr tax-free for letting a room in your home"],
@@ -1983,20 +2101,20 @@ function AllowancesTab() {
       ["Property Allowance", "£1,000", "Tax-free property income"],
     ]},
     { cat: "Savings & Investments", items: [
-      ["ISA Annual Allowance", "£20,000", "Total across all ISA types per tax year"],
+      ["ISA Annual Allowance", "£20,000", `Total across all ISA types per tax year (${currentTaxYear})`],
       ["Personal Savings Allowance (Basic)", "£1,000", "Tax-free savings interest for basic-rate payers"],
       ["Personal Savings Allowance (Higher)", "£500", "Tax-free savings interest for higher-rate payers"],
-      ["Dividend Allowance", "£500", "Tax-free dividends (2024/25 onwards)"],
+      ["Dividend Allowance", "£500", `Tax-free dividends (${currentTaxYear} onwards)`],
       ["Lifetime ISA Bonus", "25%", "Government bonus up to £1,000/yr (age 18–39)"],
       ["Help to Save Bonus", "50%", "Government bonus for eligible low-income earners"],
     ]},
     { cat: "Capital Gains", items: [
-      ["CGT Annual Exempt Amount", "£3,000", "Tax-free gains (reduced from £6,000 in 2023/24)"],
+      ["CGT Annual Exempt Amount", "£3,000", `Tax-free gains (reduced from £6,000 in 2023/24)`],
       ["Investors' Relief", "10% rate", "On qualifying business assets held 3+ years"],
       ["Business Asset Disposal Relief", "10%", "On lifetime gains up to £1,000,000 (BADR)"],
     ]},
     { cat: "Pension", items: [
-      ["Annual Allowance", "£60,000", "Max pension input per tax year"],
+      ["Annual Allowance", "£60,000", `Max pension input per tax year`],
       ["Money Purchase Annual Allowance", "£10,000", "If you've flexibly accessed pension"],
       ["Tapered Annual Allowance Min", "£10,000", "For adjusted incomes over £260,000"],
       ["Lifetime Allowance", "Abolished", "LTA removed from April 2024"],
@@ -2060,7 +2178,7 @@ function Dashboard({ onNavigate }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
           <div>
             <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, marginBottom: 4 }}>
-              UK Tax Dashboard — 2024/25
+              UK Tax Dashboard — ${currentTaxYear}
             </div>
             <div style={{ fontSize: 12, color: "var(--text-dim)" }}>
               Enter your gross income below for an instant overview of your tax position
@@ -2120,7 +2238,7 @@ function Dashboard({ onNavigate }) {
           { icon: "💰", title: "Dividends", desc: "Dividend tax across all rate bands with planning tips", tab: "dividends", color: "var(--green)" },
           { icon: "🏢", title: "Corp. Tax", desc: "Small company CT, marginal relief and director strategy", tab: "corp", color: "var(--red)" },
           { icon: "🎁", title: "Benefits & Credits", desc: "Child Benefit, HICBC, student loans and key reliefs", tab: "benefits", color: "var(--green)" },
-          { icon: "✅", title: "All Allowances", desc: "Complete 2024/25 allowances and thresholds reference", tab: "allowances", color: "var(--gold)" },
+          { icon: "✅", title: `All Allowances`, desc: `Complete ${currentTaxYear} allowances and thresholds reference`, tab: "allowances", color: "var(--gold)" },
         ].map(({ icon, title, desc, tab, color }) => (
           <div key={tab} className="card" style={{ cursor: "pointer", transition: "all 0.15s" }}
             onClick={() => onNavigate(tab)}
@@ -2135,17 +2253,27 @@ function Dashboard({ onNavigate }) {
         ))}
       </div>
 
+      const taxYear = TAX_YEARS[currentTaxYear];
+      const taxYearStart = taxYear.startDate;
+      const taxYearEnd = taxYear.endDate;
+      const taxYearBeginsLabel = `Tax Year ${currentTaxYear} Begins`;
+      const taxYearEndsLabel = `Tax Year ${currentTaxYear} Ends / Use ISA Allowance`;
+      const startYear = parseInt(currentTaxYear.split("/")[0]);
+      const endYear = parseInt(currentTaxYear.split("/")[1]);
+
+      const keyDates = [
+        [`6 Apr ${startYear}`, `Tax Year ${currentTaxYear} Begins`],
+        [`31 Jul ${startYear}`, "Second Payment on Account"],
+        [`5 Oct ${startYear}`, "Register for Self Assessment"],
+        [`31 Oct ${startYear}`, "Paper Self Assessment Deadline"],
+        [`31 Jan ${endYear}`, "Online SA & Tax Payment Deadline"],
+        [taxYearEnd, `Tax Year ${currentTaxYear} Ends / Use ISA Allowance`],
+      ];
+
       <div className="card">
-        <div className="card-title">⚡ Key 2024/25 Tax Dates</div>
+        <div className="card-title">⚡ Key Tax Dates</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
-          {[
-            ["6 Apr 2024", "Tax Year 2024/25 Begins"],
-            ["31 Jul 2024", "Second Payment on Account"],
-            ["5 Oct 2024", "Register for Self Assessment"],
-            ["31 Oct 2024", "Paper Self Assessment Deadline"],
-            ["31 Jan 2025", "Online SA & Tax Payment Deadline"],
-            ["5 Apr 2025", "Tax Year 2024/25 Ends / Use ISA Allowance"],
-          ].map(([date, event]) => (
+          {keyDates.map(([date, event]) => (
             <div key={date} style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <div style={{ background: "var(--gold-dim)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 6, padding: "4px 8px", fontSize: 10, fontWeight: 700, color: "var(--gold-light)", whiteSpace: "nowrap", flexShrink: 0 }}>{date}</div>
               <div style={{ fontSize: 12, color: "var(--text-dim)" }}>{event}</div>
@@ -2155,7 +2283,7 @@ function Dashboard({ onNavigate }) {
       </div>
 
       <div className="info-box" style={{ marginTop: 16 }}>
-        ⚖️ <strong>Disclaimer:</strong> This tool is for educational and planning purposes only. All figures are based on 2024/25 HMRC rates. Always consult a qualified accountant or tax adviser for personalised advice. Tax laws change frequently.
+        ⚖️ <strong>Disclaimer:</strong> This tool is for educational and planning purposes only. All figures are based on {currentTaxYear} HMRC rates. Always consult a qualified accountant or tax adviser for personalised advice. Tax laws change frequently.
       </div>
     </div>
   );
@@ -2194,7 +2322,7 @@ export default function App() {
                 <span className="logo-sub">Open Source Tax Manager</span>
               </div>
             </div>
-            <div className="tax-year-badge">Tax Year 2024/25</div>
+            <div className="tax-year-badge">Tax Year {currentTaxYear}</div>
           </div>
         </header>
 

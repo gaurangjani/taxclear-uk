@@ -1,6 +1,6 @@
 # TaxClear UK 🇬🇧
 
-> Open-source UK tax manager for individuals and small businesses — 2024/25 tax year
+> Open-source UK tax manager for individuals and small businesses — supports 2024/25, 2025/26 & 2026/27 tax years
 
 [![Deploy to GitHub Pages](https://github.com/gaurangjani/taxclear-uk/actions/workflows/deploy.yml/badge.svg)](https://github.com/gaurangjani/taxclear-uk/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -21,7 +21,7 @@
 | 💰 **Dividends** | All three rate bands, ISA strategy, director salary planning |
 | 🏢 **Corporation Tax** | 19/25% rates + marginal relief, R&D notes, director strategy |
 | 🎁 **Benefits** | Child Benefit + HICBC, student loans (all 4 plans), EIS/SEIS, Rent-a-Room |
-| ✅ **Allowances** | Full 2024/25 reference — 30+ allowances across all tax types |
+| ✅ **Allowances** | Full reference — 30+ allowances across all tax types |
 
 ---
 
@@ -54,7 +54,7 @@ Open http://localhost:5173/taxclear-uk/
 
 ---
 
-## Tax Rates Used (2024/25)
+## Tax Rates Used (2024/25, 2025/26 & 2026/27)
 
 All figures sourced from HMRC:
 
