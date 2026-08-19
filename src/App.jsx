@@ -1,4 +1,11 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, createContext, useContext } from "react";
+
+// ─── TAX YEAR CONTEXT ──────────────────────────────────────────────────────────
+const TaxYearContext = createContext("2024/25");
+
+export function useTaxYear() {
+  return useContext(TaxYearContext);
+}
 
 // ─── TAX YEARS ─────────────────────────────────────────────────────────────────
 const TAX_YEARS = {
@@ -6,211 +13,202 @@ const TAX_YEARS = {
     label: "2024/25",
     startDate: "6 Apr 2024",
     endDate: "5 Apr 2025",
-    personalAllowance: 12570,
-    basicRateLimit: 50270,
-    higherRateLimit: 125140,
-    basicRate: 0.20,
-    higherRate: 0.40,
-    additionalRate: 0.45,
-    niPrimaryThreshold: 12570,
-    niUpperEarnings: 50270,
-    niMainRate: 0.08,
-    niUpperRate: 0.02,
-    niSecondaryThreshold: 9100,
-    niEmployerRate: 0.138,
-    class2Weekly: 3.45,
-    class4Main: 0.06,
-    class4Upper: 0.02,
-    class4LowerProfit: 12570,
-    class4UpperProfit: 50270,
-    pensionAnnualAllowance: 60000,
-    cgtAllowance: 3000,
-    cgtBasicRateResidential: 0.18,
-    cgtHigherRateResidential: 0.28,
-    cgtBasicRateOther: 0.10,
-    cgtHigherRateOther: 0.20,
-    dividendAllowance: 500,
-    dividendBasic: 0.0875,
-    dividendHigher: 0.3375,
-    dividendAdditional: 0.3938,
-    vatStandard: 0.20,
-    vatReduced: 0.05,
-    isaAllowance: 20000,
-    corpSmall: 0.19,
-    corpMain: 0.25,
-    corpSmallLimit: 50000,
-    corpMainLimit: 250000,
-    slPlan1Threshold: 22015,
-    slPlan2Threshold: 27295,
-    slPlan4Threshold: 27660,
-    slPlan5Threshold: 25000,
-    slRate: 0.09,
-    childBenefitRate1: 25.60,
-    childBenefitAdditional: 16.95,
-    hicbThreshold: 60000,
-    hicbUpper: 80000,
-    marriageAllowance: 1260,
-    vatRegistrationThreshold: 90000,
+    PERSONAL_ALLOWANCE: 12570,
+    BASIC_RATE_LIMIT: 50270,
+    HIGHER_RATE_LIMIT: 125140,
+    BASIC_RATE: 0.20,
+    HIGHER_RATE: 0.40,
+    ADDITIONAL_RATE: 0.45,
+    NI_PRIMARY_THRESHOLD: 12570,
+    NI_UPPER_EARNINGS: 50270,
+    NI_MAIN_RATE: 0.08,
+    NI_UPPER_RATE: 0.02,
+    NI_SECONDARY_THRESHOLD: 9100,
+    NI_EMPLOYER_RATE: 0.138,
+    CLASS2_WEEKLY: 3.45,
+    CLASS4_MAIN: 0.06,
+    CLASS4_UPPER: 0.02,
+    CLASS4_LOWER_PROFIT: 12570,
+    CLASS4_UPPER_PROFIT: 50270,
+    PENSION_ANNUAL_ALLOWANCE: 60000,
+    CGT_ALLOWANCE: 3000,
+    CGT_BASIC_RATE_RESIDENTIAL: 0.18,
+    CGT_HIGHER_RATE_RESIDENTIAL: 0.28,
+    CGT_BASIC_RATE_OTHER: 0.10,
+    CGT_HIGHER_RATE_OTHER: 0.20,
+    DIVIDEND_ALLOWANCE: 500,
+    DIVIDEND_BASIC: 0.0875,
+    DIVIDEND_HIGHER: 0.3375,
+    DIVIDEND_ADDITIONAL: 0.3938,
+    VAT_STANDARD: 0.20,
+    VAT_REDUCED: 0.05,
+    ISA_ALLOWANCE: 20000,
+    CORP_SMALL: 0.19,
+    CORP_MAIN: 0.25,
+    CORP_SMALL_LIMIT: 50000,
+    CORP_MAIN_LIMIT: 250000,
+    SL_PLAN1_THRESHOLD: 22015,
+    SL_PLAN2_THRESHOLD: 27295,
+    SL_PLAN4_THRESHOLD: 27660,
+    SL_PLAN5_THRESHOLD: 25000,
+    SL_RATE: 0.09,
+    CHILD_BENEFIT_RATE1: 25.60,
+    CHILD_BENEFIT_ADDITIONAL: 16.95,
+    HICBC_THRESHOLD: 60000,
+    HICBC_UPPER: 80000,
+    MARRIAGE_ALLOWANCE: 1260,
+    VAT_REGISTRATION_THRESHOLD: 90000,
   },
   "2025/26": {
     label: "2025/26",
     startDate: "6 Apr 2025",
     endDate: "5 Apr 2026",
-    personalAllowance: 12570,
-    basicRateLimit: 50270,
-    higherRateLimit: 125140,
-    basicRate: 0.20,
-    higherRate: 0.40,
-    additionalRate: 0.45,
-    niPrimaryThreshold: 12570,
-    niUpperEarnings: 50270,
-    niMainRate: 0.08,
-    niUpperRate: 0.02,
-    niSecondaryThreshold: 5000,
-    niEmployerRate: 0.15,
-    class2Weekly: 3.45,
-    class4Main: 0.06,
-    class4Upper: 0.02,
-    class4LowerProfit: 12570,
-    class4UpperProfit: 50270,
-    pensionAnnualAllowance: 60000,
-    cgtAllowance: 3000,
-    cgtBasicRateResidential: 0.18,
-    cgtHigherRateResidential: 0.28,
-    cgtBasicRateOther: 0.10,
-    cgtHigherRateOther: 0.20,
-    dividendAllowance: 500,
-    dividendBasic: 0.0875,
-    dividendHigher: 0.3375,
-    dividendAdditional: 0.3938,
-    vatStandard: 0.20,
-    vatReduced: 0.05,
-    isaAllowance: 20000,
-    corpSmall: 0.19,
-    corpMain: 0.25,
-    corpSmallLimit: 50000,
-    corpMainLimit: 250000,
-    slPlan1Threshold: 22015,
-    slPlan2Threshold: 27295,
-    slPlan4Threshold: 27660,
-    slPlan5Threshold: 25000,
-    slRate: 0.09,
-    childBenefitRate1: 25.60,
-    childBenefitAdditional: 16.95,
-    hicbThreshold: 60000,
-    hicbUpper: 80000,
-    marriageAllowance: 1260,
-    vatRegistrationThreshold: 90000,
+    PERSONAL_ALLOWANCE: 12570,
+    BASIC_RATE_LIMIT: 50270,
+    HIGHER_RATE_LIMIT: 125140,
+    BASIC_RATE: 0.20,
+    HIGHER_RATE: 0.40,
+    ADDITIONAL_RATE: 0.45,
+    NI_PRIMARY_THRESHOLD: 12570,
+    NI_UPPER_EARNINGS: 50270,
+    NI_MAIN_RATE: 0.08,
+    NI_UPPER_RATE: 0.02,
+    NI_SECONDARY_THRESHOLD: 5000,
+    NI_EMPLOYER_RATE: 0.15,
+    CLASS2_WEEKLY: 3.45,
+    CLASS4_MAIN: 0.06,
+    CLASS4_UPPER: 0.02,
+    CLASS4_LOWER_PROFIT: 12570,
+    CLASS4_UPPER_PROFIT: 50270,
+    PENSION_ANNUAL_ALLOWANCE: 60000,
+    CGT_ALLOWANCE: 3000,
+    CGT_BASIC_RATE_RESIDENTIAL: 0.18,
+    CGT_HIGHER_RATE_RESIDENTIAL: 0.28,
+    CGT_BASIC_RATE_OTHER: 0.10,
+    CGT_HIGHER_RATE_OTHER: 0.20,
+    DIVIDEND_ALLOWANCE: 500,
+    DIVIDEND_BASIC: 0.0875,
+    DIVIDEND_HIGHER: 0.3375,
+    DIVIDEND_ADDITIONAL: 0.3938,
+    VAT_STANDARD: 0.20,
+    VAT_REDUCED: 0.05,
+    ISA_ALLOWANCE: 20000,
+    CORP_SMALL: 0.19,
+    CORP_MAIN: 0.25,
+    CORP_SMALL_LIMIT: 50000,
+    CORP_MAIN_LIMIT: 250000,
+    SL_PLAN1_THRESHOLD: 22015,
+    SL_PLAN2_THRESHOLD: 27295,
+    SL_PLAN4_THRESHOLD: 27660,
+    SL_PLAN5_THRESHOLD: 25000,
+    SL_RATE: 0.09,
+    CHILD_BENEFIT_RATE1: 25.60,
+    CHILD_BENEFIT_ADDITIONAL: 16.95,
+    HICBC_THRESHOLD: 60000,
+    HICBC_UPPER: 80000,
+    MARRIAGE_ALLOWANCE: 1260,
+    VAT_REGISTRATION_THRESHOLD: 90000,
   },
   "2026/27": {
     label: "2026/27",
     startDate: "6 Apr 2026",
     endDate: "5 Apr 2027",
-    personalAllowance: 12570,
-    basicRateLimit: 50270,
-    higherRateLimit: 125140,
-    basicRate: 0.20,
-    higherRate: 0.40,
-    additionalRate: 0.45,
-    niPrimaryThreshold: 12570,
-    niUpperEarnings: 50270,
-    niMainRate: 0.08,
-    niUpperRate: 0.02,
-    niSecondaryThreshold: 5000,
-    niEmployerRate: 0.15,
-    class2Weekly: 3.45,
-    class4Main: 0.06,
-    class4Upper: 0.02,
-    class4LowerProfit: 12570,
-    class4UpperProfit: 50270,
-    pensionAnnualAllowance: 60000,
-    cgtAllowance: 3000,
-    cgtBasicRateResidential: 0.18,
-    cgtHigherRateResidential: 0.28,
-    cgtBasicRateOther: 0.10,
-    cgtHigherRateOther: 0.20,
-    dividendAllowance: 500,
-    dividendBasic: 0.0875,
-    dividendHigher: 0.3375,
-    dividendAdditional: 0.3938,
-    vatStandard: 0.20,
-    vatReduced: 0.05,
-    isaAllowance: 20000,
-    corpSmall: 0.19,
-    corpMain: 0.25,
-    corpSmallLimit: 50000,
-    corpMainLimit: 250000,
-    slPlan1Threshold: 22015,
-    slPlan2Threshold: 27295,
-    slPlan4Threshold: 27660,
-    slPlan5Threshold: 25000,
-    slRate: 0.09,
-    childBenefitRate1: 25.60,
-    childBenefitAdditional: 16.95,
-    hicbThreshold: 60000,
-    hicbUpper: 80000,
-    marriageAllowance: 1260,
-    vatRegistrationThreshold: 90000,
+    PERSONAL_ALLOWANCE: 12570,
+    BASIC_RATE_LIMIT: 50270,
+    HIGHER_RATE_LIMIT: 125140,
+    BASIC_RATE: 0.20,
+    HIGHER_RATE: 0.40,
+    ADDITIONAL_RATE: 0.45,
+    NI_PRIMARY_THRESHOLD: 12570,
+    NI_UPPER_EARNINGS: 50270,
+    NI_MAIN_RATE: 0.08,
+    NI_UPPER_RATE: 0.02,
+    NI_SECONDARY_THRESHOLD: 5000,
+    NI_EMPLOYER_RATE: 0.15,
+    CLASS2_WEEKLY: 3.45,
+    CLASS4_MAIN: 0.06,
+    CLASS4_UPPER: 0.02,
+    CLASS4_LOWER_PROFIT: 12570,
+    CLASS4_UPPER_PROFIT: 50270,
+    PENSION_ANNUAL_ALLOWANCE: 60000,
+    CGT_ALLOWANCE: 3000,
+    CGT_BASIC_RATE_RESIDENTIAL: 0.18,
+    CGT_HIGHER_RATE_RESIDENTIAL: 0.28,
+    CGT_BASIC_RATE_OTHER: 0.10,
+    CGT_HIGHER_RATE_OTHER: 0.20,
+    DIVIDEND_ALLOWANCE: 500,
+    DIVIDEND_BASIC: 0.0875,
+    DIVIDEND_HIGHER: 0.3375,
+    DIVIDEND_ADDITIONAL: 0.3938,
+    VAT_STANDARD: 0.20,
+    VAT_REDUCED: 0.05,
+    ISA_ALLOWANCE: 20000,
+    CORP_SMALL: 0.19,
+    CORP_MAIN: 0.25,
+    CORP_SMALL_LIMIT: 50000,
+    CORP_MAIN_LIMIT: 250000,
+    SL_PLAN1_THRESHOLD: 22015,
+    SL_PLAN2_THRESHOLD: 27295,
+    SL_PLAN4_THRESHOLD: 27660,
+    SL_PLAN5_THRESHOLD: 25000,
+    SL_RATE: 0.09,
+    CHILD_BENEFIT_RATE1: 25.60,
+    CHILD_BENEFIT_ADDITIONAL: 16.95,
+    HICBC_THRESHOLD: 60000,
+    HICBC_UPPER: 80000,
+    MARRIAGE_ALLOWANCE: 1260,
+    VAT_REGISTRATION_THRESHOLD: 90000,
   },
 };
 
-const now = new Date();
-const month = now.getMonth() + 1; // 1-12
-const year = now.getFullYear();
-// UK tax year runs from 6 April to 5 April
-// Determine default tax year based on current date
-let currentTaxYear;
-if (month > 4 || (month === 4 && now.getDate() >= 6)) {
-  // On/after 6 April: tax year is year/(year+1)
-  if (year >= 2026) currentTaxYear = "2026/27";
-  else if (year >= 2025) currentTaxYear = "2025/26";
-  else if (year >= 2024) currentTaxYear = "2024/25";
-  else currentTaxYear = "2024/25";
-} else {
-  // Before 6 April: tax year is (year-1)/year
-  if (year - 1 >= 2026) currentTaxYear = "2026/27";
-  else if (year - 1 >= 2025) currentTaxYear = "2025/26";
-  else if (year - 1 >= 2024) currentTaxYear = "2024/25";
-  else currentTaxYear = "2024/25";
-}
+// Default tax year: 2026/27 for testing purposes
+// Change to "2025/26" or "2024/25" as needed
+const currentTaxYear = "2026/27";
+
 const TAX = TAX_YEARS[currentTaxYear];
+
+// Helper to get tax data for any year
+function getTaxData(taxYear) {
+  return TAX_YEARS[taxYear];
+}
 
 const fmt = (n) => `£${Math.round(n).toLocaleString("en-GB")}`;
 const fmtP = (n) => `${(n * 100).toFixed(1)}%`;
 const fmtPct = (n) => `${n}%`;
 
 // ─── CALCULATIONS ─────────────────────────────────────────────────────────────
-function calcIncomeTax(grossIncome, personalAllowance = TAX.PERSONAL_ALLOWANCE, pensionContrib = 0) {
+function calcIncomeTax(grossIncome, personalAllowance, pensionContrib = 0, taxData = TAX) {
+  if (personalAllowance === undefined) personalAllowance = taxData.PERSONAL_ALLOWANCE;
   const taxableIncome = Math.max(0, grossIncome - personalAllowance - pensionContrib);
-  const basicBand = Math.max(0, TAX.BASIC_RATE_LIMIT - TAX.PERSONAL_ALLOWANCE);
+  const basicBand = Math.max(0, taxData.BASIC_RATE_LIMIT - taxData.PERSONAL_ALLOWANCE);
   
   let basicTax = 0, higherTax = 0, additionalTax = 0;
-  
+
   if (taxableIncome <= basicBand) {
-    basicTax = taxableIncome * TAX.BASIC_RATE;
-  } else if (taxableIncome <= TAX.HIGHER_RATE_LIMIT - TAX.PERSONAL_ALLOWANCE) {
-    basicTax = basicBand * TAX.BASIC_RATE;
-    higherTax = (taxableIncome - basicBand) * TAX.HIGHER_RATE;
+    basicTax = taxableIncome * taxData.BASIC_RATE;
+  } else if (taxableIncome <= taxData.HIGHER_RATE_LIMIT - taxData.PERSONAL_ALLOWANCE) {
+    basicTax = basicBand * taxData.BASIC_RATE;
+    higherTax = (taxableIncome - basicBand) * taxData.HIGHER_RATE;
   } else {
-    basicTax = basicBand * TAX.BASIC_RATE;
-    higherTax = (TAX.HIGHER_RATE_LIMIT - TAX.BASIC_RATE_LIMIT) * TAX.HIGHER_RATE;
-    additionalTax = (taxableIncome - (TAX.HIGHER_RATE_LIMIT - TAX.PERSONAL_ALLOWANCE)) * TAX.ADDITIONAL_RATE;
+    basicTax = basicBand * taxData.BASIC_RATE;
+    higherTax = (taxData.HIGHER_RATE_LIMIT - taxData.BASIC_RATE_LIMIT) * taxData.HIGHER_RATE;
+    additionalTax = (taxableIncome - (taxData.HIGHER_RATE_LIMIT - taxData.PERSONAL_ALLOWANCE)) * taxData.ADDITIONAL_RATE;
   }
-  
+
   const total = basicTax + higherTax + additionalTax;
   return { basicTax, higherTax, additionalTax, total, taxableIncome };
 }
 
-function calcNIEmployee(grossIncome) {
-  const main = Math.max(0, Math.min(grossIncome, TAX.NI_UPPER_EARNINGS) - TAX.NI_PRIMARY_THRESHOLD) * TAX.NI_MAIN_RATE;
-  const upper = Math.max(0, grossIncome - TAX.NI_UPPER_EARNINGS) * TAX.NI_UPPER_RATE;
+function calcNIEmployee(grossIncome, taxData = TAX) {
+  const main = Math.max(0, Math.min(grossIncome, taxData.NI_UPPER_EARNINGS) - taxData.NI_PRIMARY_THRESHOLD) * taxData.NI_MAIN_RATE;
+  const upper = Math.max(0, grossIncome - taxData.NI_UPPER_EARNINGS) * taxData.NI_UPPER_RATE;
   return { main, upper, total: main + upper };
 }
 
-function calcNISelfEmployed(profits) {
-  const class2 = profits > TAX.NI_PRIMARY_THRESHOLD ? TAX.CLASS2_WEEKLY * 52 : 0;
-  const class4Main = Math.max(0, Math.min(profits, TAX.CLASS4_UPPER_PROFIT) - TAX.CLASS4_LOWER_PROFIT) * TAX.CLASS4_MAIN;
-  const class4Upper = Math.max(0, profits - TAX.CLASS4_UPPER_PROFIT) * TAX.CLASS4_UPPER;
+function calcNISelfEmployed(profits, taxData = TAX) {
+  const class2 = profits > taxData.NI_PRIMARY_THRESHOLD ? taxData.CLASS2_WEEKLY * 52 : 0;
+  const class4Main = Math.max(0, Math.min(profits, taxData.CLASS4_UPPER_PROFIT) - taxData.CLASS4_LOWER_PROFIT) * taxData.CLASS4_MAIN;
+  const class4Upper = Math.max(0, profits - taxData.CLASS4_UPPER_PROFIT) * taxData.CLASS4_UPPER;
   return { class2, class4Main, class4Upper, total: class2 + class4Main + class4Upper };
 }
 
@@ -287,6 +285,22 @@ function calcCorpTax(profit) {
   const marginalRelief = (TAX.CORP_MAIN_LIMIT - profit) * ((TAX.CORP_MAIN - TAX.CORP_SMALL) / (TAX.CORP_MAIN_LIMIT - TAX.CORP_SMALL_LIMIT));
   const tax = mainTax - marginalRelief;
   return { tax, rate: tax / profit };
+}
+
+// Hook to get calculation functions with the correct tax data
+function useCalculations() {
+  const selectedTaxYear = useTaxYear();
+  const taxData = useMemo(() => getTaxData(selectedTaxYear), [selectedTaxYear]);
+
+  return useMemo(() => ({
+    calcIncomeTax: (income, pa, pension) => calcIncomeTax(income, pa, pension, taxData),
+    calcNIEmployee: (income) => calcNIEmployee(income, taxData),
+    calcNISelfEmployed: (profits) => calcNISelfEmployed(profits, taxData),
+    calcDividendTax: (divs, other, pa) => calcDividendTax(divs, other, pa, taxData),
+    calcCGT: (gain, other, type, pa) => calcCGT(gain, other, type, pa, taxData),
+    calcStudentLoan: (income, plan) => calcStudentLoan(income, plan, taxData),
+    taxData: taxData,
+  }), [taxData]);
 }
 
 // ─── STYLES ───────────────────────────────────────────────────────────────────
@@ -2160,9 +2174,17 @@ function AllowancesTab() {
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 function Dashboard({ onNavigate }) {
+  const selectedTaxYear = useTaxYear();
   const [income, setIncome] = useState(50000);
-  const it = useMemo(() => calcIncomeTax(income), [income]);
-  const ni = useMemo(() => calcNIEmployee(income), [income]);
+  const currentTaxData = useMemo(() => getTaxData(selectedTaxYear), [selectedTaxYear]);
+  const it = useMemo(() => {
+    if (!currentTaxData) return { basicTax: 0, higherTax: 0, additionalTax: 0, total: 0, taxableIncome: 0 };
+    return calcIncomeTax(income, currentTaxData.PERSONAL_ALLOWANCE, 0, currentTaxData);
+  }, [income, currentTaxData]);
+  const ni = useMemo(() => {
+    if (!currentTaxData) return { main: 0, upper: 0, total: 0 };
+    return calcNIEmployee(income, currentTaxData);
+  }, [income, currentTaxData]);
   const takeHome = income - it.total - ni.total;
   const effectiveRate = income > 0 ? (it.total + ni.total) / income : 0;
 
@@ -2178,7 +2200,7 @@ function Dashboard({ onNavigate }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
           <div>
             <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, marginBottom: 4 }}>
-              UK Tax Dashboard — ${currentTaxYear}
+              UK Tax Dashboard — {selectedTaxYear}
             </div>
             <div style={{ fontSize: 12, color: "var(--text-dim)" }}>
               Enter your gross income below for an instant overview of your tax position
@@ -2238,7 +2260,7 @@ function Dashboard({ onNavigate }) {
           { icon: "💰", title: "Dividends", desc: "Dividend tax across all rate bands with planning tips", tab: "dividends", color: "var(--green)" },
           { icon: "🏢", title: "Corp. Tax", desc: "Small company CT, marginal relief and director strategy", tab: "corp", color: "var(--red)" },
           { icon: "🎁", title: "Benefits & Credits", desc: "Child Benefit, HICBC, student loans and key reliefs", tab: "benefits", color: "var(--green)" },
-          { icon: "✅", title: `All Allowances`, desc: `Complete ${currentTaxYear} allowances and thresholds reference`, tab: "allowances", color: "var(--gold)" },
+          { icon: "✅", title: `All Allowances`, desc: `Complete ${selectedTaxYear} allowances and thresholds reference`, tab: "allowances", color: "var(--gold)" },
         ].map(({ icon, title, desc, tab, color }) => (
           <div key={tab} className="card" style={{ cursor: "pointer", transition: "all 0.15s" }}
             onClick={() => onNavigate(tab)}
@@ -2253,37 +2275,36 @@ function Dashboard({ onNavigate }) {
         ))}
       </div>
 
-      const taxYear = TAX_YEARS[currentTaxYear];
-      const taxYearStart = taxYear.startDate;
-      const taxYearEnd = taxYear.endDate;
-      const taxYearBeginsLabel = `Tax Year ${currentTaxYear} Begins`;
-      const taxYearEndsLabel = `Tax Year ${currentTaxYear} Ends / Use ISA Allowance`;
-      const startYear = parseInt(currentTaxYear.split("/")[0]);
-      const endYear = parseInt(currentTaxYear.split("/")[1]);
+      {useMemo(() => {
+        const taxYear = TAX_YEARS[selectedTaxYear];
+        const startYear = parseInt(selectedTaxYear.split("/")[0]);
+        const endYear = startYear + 1;
+        const keyDates = [
+          [`6 Apr ${startYear}`, `Tax Year ${selectedTaxYear} Begins`],
+          [`31 Jul ${startYear}`, "Second Payment on Account"],
+          [`5 Oct ${startYear}`, "Register for Self Assessment"],
+          [`31 Oct ${startYear}`, "Paper Self Assessment Deadline"],
+          [`31 Jan ${endYear}`, "Online SA & Tax Payment Deadline"],
+          [taxYear.endDate, `Tax Year ${selectedTaxYear} Ends / Use ISA Allowance`],
+        ];
 
-      const keyDates = [
-        [`6 Apr ${startYear}`, `Tax Year ${currentTaxYear} Begins`],
-        [`31 Jul ${startYear}`, "Second Payment on Account"],
-        [`5 Oct ${startYear}`, "Register for Self Assessment"],
-        [`31 Oct ${startYear}`, "Paper Self Assessment Deadline"],
-        [`31 Jan ${endYear}`, "Online SA & Tax Payment Deadline"],
-        [taxYearEnd, `Tax Year ${currentTaxYear} Ends / Use ISA Allowance`],
-      ];
-
-      <div className="card">
-        <div className="card-title">⚡ Key Tax Dates</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
-          {keyDates.map(([date, event]) => (
-            <div key={date} style={{ display: "flex", gap: 10, alignItems: "center" }}>
-              <div style={{ background: "var(--gold-dim)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 6, padding: "4px 8px", fontSize: 10, fontWeight: 700, color: "var(--gold-light)", whiteSpace: "nowrap", flexShrink: 0 }}>{date}</div>
-              <div style={{ fontSize: 12, color: "var(--text-dim)" }}>{event}</div>
+        return (
+          <div className="card">
+            <div className="card-title">⚡ Key Tax Dates</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
+              {keyDates.map(([date, event]) => (
+                <div key={date} style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <div style={{ background: "var(--gold-dim)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 6, padding: "4px 8px", fontSize: 10, fontWeight: 700, color: "var(--gold-light)", whiteSpace: "nowrap", flexShrink: 0 }}>{date}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-dim)" }}>{event}</div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        );
+      }, [selectedTaxYear])}
 
       <div className="info-box" style={{ marginTop: 16 }}>
-        ⚖️ <strong>Disclaimer:</strong> This tool is for educational and planning purposes only. All figures are based on {currentTaxYear} HMRC rates. Always consult a qualified accountant or tax adviser for personalised advice. Tax laws change frequently.
+        ⚖️ <strong>Disclaimer:</strong> This tool is for educational and planning purposes only. All figures are based on {selectedTaxYear} HMRC rates. Always consult a qualified accountant or tax adviser for personalised advice. Tax laws change frequently.
       </div>
     </div>
   );
@@ -2292,6 +2313,7 @@ function Dashboard({ onNavigate }) {
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [selectedTaxYear, setSelectedTaxYear] = useState(currentTaxYear);
 
   const renderTab = () => {
     switch (activeTab) {
@@ -2312,19 +2334,40 @@ export default function App() {
   return (
     <>
       <style>{styles}</style>
-      <div className="app">
-        <header className="header">
-          <div className="header-inner">
-            <div className="logo">
-              <div className="logo-badge">T</div>
-              <div>
-                <div className="logo-text">TaxClear UK</div>
-                <span className="logo-sub">Open Source Tax Manager</span>
+      <TaxYearContext.Provider value={selectedTaxYear}>
+        <div className="app">
+          <header className="header">
+            <div className="header-inner">
+              <div className="logo">
+                <div className="logo-badge">T</div>
+                <div>
+                  <div className="logo-text">TaxClear UK</div>
+                  <span className="logo-sub">Open Source Tax Manager</span>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <select
+                  value={selectedTaxYear}
+                  onChange={(e) => setSelectedTaxYear(e.target.value)}
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: 6,
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    background: "rgba(255,255,255,0.05)",
+                    color: "inherit",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  {Object.keys(TAX_YEARS).map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+                <div className="tax-year-badge">Tax Year {selectedTaxYear}</div>
               </div>
             </div>
-            <div className="tax-year-badge">Tax Year {currentTaxYear}</div>
-          </div>
-        </header>
+          </header>
 
         <div className="nav-tabs">
           {TABS.map(tab => (
@@ -2344,6 +2387,7 @@ export default function App() {
           {renderTab()}
         </div>
       </div>
+      </TaxYearContext.Provider>
     </>
   );
 }
